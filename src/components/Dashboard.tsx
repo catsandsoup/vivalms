@@ -3,7 +3,21 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { BookOpen, Clock, Users, Star, CheckCircle, PlayCircle } from "lucide-react";
+import { 
+  BookOpen, 
+  Clock, 
+  Users, 
+  Star, 
+  CheckCircle, 
+  PlayCircle, 
+  Search, 
+  ChevronDown, 
+  Settings, 
+  BarChart3, 
+  MessageSquare,
+  User,
+  LogOut
+} from "lucide-react";
 
 interface Module {
   id: string;
@@ -67,12 +81,19 @@ interface DashboardProps {
 
 export default function Dashboard({ onModuleSelect }: DashboardProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [showUserMenu, setShowUserMenu] = useState<boolean>(false);
+  const [showAdminMenu, setShowAdminMenu] = useState<boolean>(false);
   
   const categories = ["All", "Core Training", "Specialist Training", "Practical Skills", "Soft Skills"];
   
-  const filteredModules = selectedCategory === "All" 
-    ? modules 
-    : modules.filter(module => module.category === selectedCategory);
+  const filteredModules = modules
+    .filter(module => selectedCategory === "All" || module.category === selectedCategory)
+    .filter(module => 
+      searchQuery === "" || 
+      module.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      module.description.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
@@ -85,7 +106,107 @@ export default function Dashboard({ onModuleSelect }: DashboardProps) {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
+      {/* Top Navigation */}
+      <div className="bg-card border-b border-border">
+        <div className="container mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            {/* Logo */}
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-[var(--gradient-viva)] rounded-lg flex items-center justify-center">
+                <span className="text-primary-foreground font-heading font-bold text-lg">VM</span>
+              </div>
+              <div>
+                <h1 className="font-heading font-bold text-lg text-foreground">Viva Mutual</h1>
+                <p className="text-xs text-muted-foreground">Learning Platform</p>
+              </div>
+            </div>
+
+            {/* Search Bar */}
+            <div className="flex-1 max-w-md mx-8">
+              <div className="relative">
+                <Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+                <input
+                  type="text"
+                  placeholder="Search modules..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+            </div>
+
+            {/* User Menu & Admin Controls */}
+            <div className="flex items-center gap-2">
+              {/* Admin Menu */}
+              <div className="relative">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowAdminMenu(!showAdminMenu)}
+                  className="text-xs"
+                >
+                  <Settings size={14} className="mr-1" />
+                  Admin
+                  <ChevronDown size={14} className="ml-1" />
+                </Button>
+                {showAdminMenu && (
+                  <div className="absolute right-0 top-full mt-1 w-48 bg-card border border-border rounded-lg shadow-lg z-50">
+                    <div className="p-1">
+                      <button className="w-full text-left px-3 py-2 text-sm hover:bg-muted rounded flex items-center gap-2">
+                        <BarChart3 size={14} />
+                        Analytics
+                      </button>
+                      <button className="w-full text-left px-3 py-2 text-sm hover:bg-muted rounded flex items-center gap-2">
+                        <MessageSquare size={14} />
+                        View Feedback
+                      </button>
+                      <button className="w-full text-left px-3 py-2 text-sm hover:bg-muted rounded flex items-center gap-2">
+                        <Settings size={14} />
+                        Manage Modules
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* User Menu */}
+              <div className="relative">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowUserMenu(!showUserMenu)}
+                  className="text-xs"
+                >
+                  <User size={14} className="mr-1" />
+                  Arthur (Admin)
+                  <ChevronDown size={14} className="ml-1" />
+                </Button>
+                {showUserMenu && (
+                  <div className="absolute right-0 top-full mt-1 w-48 bg-card border border-border rounded-lg shadow-lg z-50">
+                    <div className="p-1">
+                      <button className="w-full text-left px-3 py-2 text-sm hover:bg-muted rounded flex items-center gap-2">
+                        <User size={14} />
+                        Profile
+                      </button>
+                      <button className="w-full text-left px-3 py-2 text-sm hover:bg-muted rounded flex items-center gap-2">
+                        <Settings size={14} />
+                        Settings
+                      </button>
+                      <hr className="my-1 border-border" />
+                      <button className="w-full text-left px-3 py-2 text-sm hover:bg-muted rounded flex items-center gap-2 text-destructive">
+                        <LogOut size={14} />
+                        Logout
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Hero Section */}
       <div className="bg-[var(--gradient-viva)] text-primary-foreground py-16">
         <div className="container mx-auto px-6">
           <div className="max-w-4xl">

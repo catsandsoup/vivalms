@@ -15,7 +15,11 @@ import {
   Video,
   HelpCircle,
   ChevronRight,
-  BookOpen
+  BookOpen,
+  User,
+  ChevronDown,
+  Settings,
+  LogOut
 } from "lucide-react";
 
 interface Lesson {
@@ -176,6 +180,7 @@ interface ModuleInterfaceProps {
 
 export default function ModuleInterface({ moduleId, onBack }: ModuleInterfaceProps) {
   const [currentLessonId, setCurrentLessonId] = useState("1");
+  const [showUserMenu, setShowUserMenu] = useState(false);
   
   const currentLesson = moduleData.lessons.find(lesson => lesson.id === currentLessonId);
   const completedLessons = moduleData.lessons.filter(lesson => lesson.completed).length;
@@ -202,19 +207,70 @@ export default function ModuleInterface({ moduleId, onBack }: ModuleInterfacePro
   };
 
   return (
-    <div className="min-h-screen bg-background flex">
-      {/* Sidebar - Lesson List */}
-      <div className="w-80 bg-card border-r border-border flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col">
+      {/* Top Navigation */}
+      <div className="bg-card border-b border-border">
+        <div className="px-6 py-4">
+          <div className="flex items-center justify-between">
+            {/* Logo & Back */}
+            <div className="flex items-center gap-6">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-[var(--gradient-viva)] rounded flex items-center justify-center">
+                  <span className="text-primary-foreground font-heading font-bold text-sm">VM</span>
+                </div>
+                <span className="font-heading font-bold text-foreground">Viva Mutual</span>
+              </div>
+              <Button 
+                variant="ghost" 
+                onClick={onBack}
+                size="sm"
+              >
+                <ArrowLeft size={16} className="mr-2" />
+                Back to Dashboard
+              </Button>
+            </div>
+
+            {/* User Menu */}
+            <div className="relative">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowUserMenu(!showUserMenu)}
+                className="text-xs"
+              >
+                <User size={14} className="mr-1" />
+                Arthur (Admin)
+                <ChevronDown size={14} className="ml-1" />
+              </Button>
+              {showUserMenu && (
+                <div className="absolute right-0 top-full mt-1 w-48 bg-card border border-border rounded-lg shadow-lg z-50">
+                  <div className="p-1">
+                    <button className="w-full text-left px-3 py-2 text-sm hover:bg-muted rounded flex items-center gap-2">
+                      <User size={14} />
+                      Profile
+                    </button>
+                    <button className="w-full text-left px-3 py-2 text-sm hover:bg-muted rounded flex items-center gap-2">
+                      <Settings size={14} />
+                      Settings
+                    </button>
+                    <hr className="my-1 border-border" />
+                    <button className="w-full text-left px-3 py-2 text-sm hover:bg-muted rounded flex items-center gap-2 text-destructive">
+                      <LogOut size={14} />
+                      Logout
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex flex-1">
+        {/* Sidebar - Lesson List */}
+        <div className="w-80 bg-card border-r border-border flex flex-col">
         {/* Header */}
         <div className="p-6 border-b border-border">
-          <Button 
-            variant="ghost" 
-            onClick={onBack}
-            className="mb-4 -ml-2"
-          >
-            <ArrowLeft size={16} className="mr-2" />
-            Back to Dashboard
-          </Button>
           
           <h2 className="text-lg font-heading font-semibold mb-2 text-foreground">
             {moduleData.title}
@@ -290,10 +346,26 @@ export default function ModuleInterface({ moduleId, onBack }: ModuleInterfacePro
             ))}
           </div>
         </div>
+
+        {/* Quick Access Resources */}
+        <div className="p-4 border-t border-border">
+          <h4 className="text-sm font-semibold mb-3 text-foreground">Quick Downloads</h4>
+          <div className="space-y-2">
+            {currentLesson?.content?.resources?.map((resource, index) => (
+              <button 
+                key={index}
+                className="w-full flex items-center gap-2 p-2 text-left hover:bg-muted rounded text-xs"
+              >
+                <Download size={14} className="text-primary flex-shrink-0" />
+                <span className="truncate">{resource.title}</span>
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
 
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col">
+        {/* Main Content Area */}
+        <div className="flex-1 flex flex-col">
         {/* Content Header */}
         <div className="bg-card border-b border-border p-6">
           <div className="flex items-start justify-between">
@@ -442,6 +514,7 @@ export default function ModuleInterface({ moduleId, onBack }: ModuleInterfacePro
               </Button>
             </div>
           </div>
+        </div>
         </div>
       </div>
     </div>
