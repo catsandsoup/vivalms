@@ -159,7 +159,7 @@ export default function Dashboard({
       </div>
 
       {/* Hero Section */}
-      <div className="bg-[var(--gradient-viva)] text-primary-foreground py-16">
+      <div className="bg-[var(--gradient-viva)] text-primary-foreground py-[14px]">
         <div className="container mx-auto px-6">
           
         </div>
@@ -168,7 +168,7 @@ export default function Dashboard({
       <div className="container mx-auto px-6 py-12">
         {/* Category Filter */}
         <div className="mb-8">
-          <h2 className="text-2xl font-heading font-semibold mb-4">Learning Modules</h2>
+          <h2 className="font-heading font-semibold mb-4 text-5xl">Learning Modules</h2>
           <div className="flex flex-wrap gap-2">
             {categories.map(category => <Button key={category} variant={selectedCategory === category ? "default" : "outline"} onClick={() => setSelectedCategory(category)} className={selectedCategory === category ? "btn-viva" : "btn-viva-outline"}>
                 {category}
