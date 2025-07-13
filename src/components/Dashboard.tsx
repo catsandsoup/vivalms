@@ -89,7 +89,7 @@ export default function Dashboard({
               </div>
               <div>
                 <h1 className="font-heading font-bold text-3xl text-fuchsia-900">Viva Mutual</h1>
-                <p className="text-xs text-muted-foreground">Online Learning Platform</p>
+                <p className="text-xs text-muted-foreground text-center">Online Learning Platform</p>
               </div>
             </div>
 
