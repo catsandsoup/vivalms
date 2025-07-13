@@ -18,6 +18,10 @@ export default {
 			}
 		},
 		extend: {
+			fontFamily: {
+				heading: ['"CoconPro"', 'system-ui', 'sans-serif'],
+				body: ['"Open Sans"', 'system-ui', 'sans-serif'],
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
@@ -61,6 +65,11 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				viva: {
+					purple: 'hsl(var(--viva-purple))',
+					pink: 'hsl(var(--viva-pink))',
+					'bright-pink': 'hsl(var(--viva-bright-pink))'
 				}
 			},
 			borderRadius: {

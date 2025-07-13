@@ -2,41 +2,61 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Viva Mutual LMS Design System - Professional healthcare training platform */
+
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap');
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Viva Mutual Brand Colors */
+    --viva-purple: 253 45% 25%; /* #26225c - Body Purple */
+    --viva-pink: 293 47% 42%; /* #8a408f - Title Pink */
+    --viva-bright-pink: 320 82% 52%; /* #e8208e - Text Pink */
+    
+    /* Design System Colors */
+    --background: 0 0% 98%;
+    --foreground: 253 45% 25%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 253 45% 25%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 253 45% 25%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 293 47% 42%;
+    --primary-foreground: 0 0% 98%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 293 20% 95%;
+    --secondary-foreground: 253 45% 25%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 253 15% 96%;
+    --muted-foreground: 253 20% 55%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 320 82% 52%;
+    --accent-foreground: 0 0% 98%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 253 15% 92%;
+    --input: 253 15% 92%;
+    --ring: 293 47% 42%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
+
+    /* Gradients */
+    --gradient-viva: linear-gradient(135deg, hsl(var(--viva-purple)), hsl(var(--viva-pink)));
+    --gradient-subtle: linear-gradient(135deg, hsl(var(--viva-pink) / 0.1), hsl(var(--viva-purple) / 0.05));
+    --gradient-card: linear-gradient(135deg, hsl(var(--card)), hsl(var(--muted)));
+
+    /* Shadows */
+    --shadow-card: 0 4px 20px hsl(var(--viva-purple) / 0.1);
+    --shadow-hover: 0 8px 30px hsl(var(--viva-purple) / 0.15);
+    --shadow-active: 0 2px 10px hsl(var(--viva-purple) / 0.2);
+
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
     --sidebar-background: 0 0% 98%;
 
@@ -100,6 +120,45 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-body;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading text-foreground;
+  }
+}
+
+@layer components {
+  /* Viva Mutual Component Variants */
+  .card-viva {
+    @apply bg-card border-border shadow-[var(--shadow-card)] rounded-[var(--radius)] transition-[var(--transition-smooth)] hover:shadow-[var(--shadow-hover)];
+  }
+  
+  .btn-viva {
+    @apply bg-[var(--gradient-viva)] text-primary-foreground font-medium px-6 py-3 rounded-[var(--radius)] transition-[var(--transition-smooth)] hover:shadow-[var(--shadow-hover)] active:shadow-[var(--shadow-active)] transform hover:scale-105 active:scale-95;
+  }
+  
+  .btn-viva-outline {
+    @apply border-2 border-primary text-primary bg-transparent font-medium px-6 py-3 rounded-[var(--radius)] transition-[var(--transition-smooth)] hover:bg-primary hover:text-primary-foreground hover:shadow-[var(--shadow-hover)];
+  }
+  
+  .text-gradient {
+    @apply bg-[var(--gradient-viva)] bg-clip-text text-transparent;
+  }
+  
+  .sidebar-lesson {
+    @apply flex items-center gap-3 p-3 rounded-lg transition-[var(--transition-smooth)] hover:bg-secondary cursor-pointer;
+  }
+  
+  .sidebar-lesson.active {
+    @apply bg-primary text-primary-foreground shadow-[var(--shadow-active)];
+  }
+  
+  .progress-indicator {
+    @apply h-2 bg-secondary rounded-full overflow-hidden;
+  }
+  
+  .progress-bar {
+    @apply h-full bg-[var(--gradient-viva)] transition-[var(--transition-smooth)];
   }
 }
