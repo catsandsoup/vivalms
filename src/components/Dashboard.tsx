@@ -84,9 +84,7 @@ export default function Dashboard({
           <div className="flex items-center justify-between">
             {/* Logo */}
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-[var(--gradient-viva)] rounded-lg flex items-center justify-center">
-                <span className="text-primary-foreground font-heading font-bold text-lg">VM</span>
-              </div>
+              
               <div>
                 <h1 className="font-heading font-bold text-3xl text-fuchsia-900">Viva Mutual</h1>
                 <p className="text-xs text-muted-foreground text-center">Online Learning Platform</p>
@@ -159,11 +157,7 @@ export default function Dashboard({
       </div>
 
       {/* Hero Section */}
-      <div className="bg-[var(--gradient-viva)] text-primary-foreground py-[14px]">
-        <div className="container mx-auto px-6">
-          
-        </div>
-      </div>
+      
 
       <div className="container mx-auto px-6 py-12">
         {/* Category Filter */}
