@@ -398,7 +398,7 @@ export default function ModuleInterface({ moduleId, onBack }: ModuleInterfacePro
           {currentLesson?.type === "video" && (
             <div className="space-y-6">
               {/* Video Player Placeholder */}
-              <Card className="card-viva aspect-video flex items-center justify-center bg-muted">
+              <Card className="card-viva h-64 flex items-center justify-center bg-muted">
                 <div className="text-center">
                   <PlayCircle size={64} className="mx-auto mb-4 text-primary" />
                   <h3 className="text-lg font-semibold mb-2">Video Content</h3>
