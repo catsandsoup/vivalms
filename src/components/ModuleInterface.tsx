@@ -210,9 +210,7 @@ export default function ModuleInterface({
             {/* Logo & Back */}
             <div className="flex items-center gap-6">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-[var(--gradient-viva)] rounded flex items-center justify-center">
-                  <span className="text-primary-foreground font-heading font-bold text-sm">VM</span>
-                </div>
+                
                 <span className="font-heading font-bold text-foreground">Viva Mutual</span>
               </div>
               <Button variant="ghost" onClick={onBack} size="sm">
