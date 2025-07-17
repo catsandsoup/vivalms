@@ -19,8 +19,9 @@ export default {
 		},
 		extend: {
 			fontFamily: {
-				heading: ['"CoconPro"', 'system-ui', 'sans-serif'],
+				heading: ['"Open Sans"', 'system-ui', 'sans-serif'],
 				body: ['"Open Sans"', 'system-ui', 'sans-serif'],
+				sans: ['"Open Sans"', 'system-ui', 'sans-serif'],
 			},
 			colors: {
 				border: 'hsl(var(--border))',

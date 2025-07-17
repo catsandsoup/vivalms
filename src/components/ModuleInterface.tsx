@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, PlayCircle, CheckCircle, Download, Clock, Users, FileText, Video, HelpCircle, ChevronRight, BookOpen, User, ChevronDown, Settings, LogOut } from "lucide-react";
+import Navigation from "@/components/ui/navigation";
+import PageHeader from "@/components/ui/page-header";
+import LessonSidebar from "@/components/ui/lesson-sidebar";
+import VideoPlayer from "@/components/ui/video-player";
+import { PlayCircle, CheckCircle, Download, ChevronRight, Video, FileText, HelpCircle, BookOpen } from "lucide-react";
 interface Lesson {
   id: string;
   title: string;
@@ -170,10 +172,32 @@ export default function ModuleInterface({
   onBack
 }: ModuleInterfaceProps) {
   const [currentLessonId, setCurrentLessonId] = useState("1");
-  const [showUserMenu, setShowUserMenu] = useState(false);
+  
   const currentLesson = moduleData.lessons.find(lesson => lesson.id === currentLessonId);
   const completedLessons = moduleData.lessons.filter(lesson => lesson.completed).length;
   const progressPercentage = Math.round(completedLessons / moduleData.lessons.length * 100);
+  
+  const currentLessonIndex = moduleData.lessons.findIndex(lesson => lesson.id === currentLessonId);
+  const isFirstLesson = currentLessonIndex === 0;
+  const isLastLesson = currentLessonIndex === moduleData.lessons.length - 1;
+
+  const handlePreviousLesson = () => {
+    if (!isFirstLesson) {
+      setCurrentLessonId(moduleData.lessons[currentLessonIndex - 1].id);
+    }
+  };
+
+  const handleNextLesson = () => {
+    if (!isLastLesson) {
+      setCurrentLessonId(moduleData.lessons[currentLessonIndex + 1].id);
+    }
+  };
+
+  const handleMarkComplete = () => {
+    // In a real app, this would update the lesson completion status
+    console.log(`Marking lesson ${currentLessonId} as complete`);
+  };
+
   const getTypeIcon = (type: string) => {
     switch (type) {
       case "video":
@@ -188,265 +212,212 @@ export default function ModuleInterface({
         return <FileText size={16} />;
     }
   };
+
   const getTypeColor = (type: string) => {
     switch (type) {
       case "video":
-        return "bg-blue-100 text-blue-800";
+        return "bg-blue-100 text-blue-800 border-blue-200";
       case "reading":
-        return "bg-green-100 text-green-800";
+        return "bg-green-100 text-green-800 border-green-200";
       case "quiz":
-        return "bg-purple-100 text-purple-800";
+        return "bg-purple-100 text-purple-800 border-purple-200";
       case "activity":
-        return "bg-orange-100 text-orange-800";
+        return "bg-orange-100 text-orange-800 border-orange-200";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-gray-100 text-gray-800 border-gray-200";
     }
   };
-  return <div className="min-h-screen bg-background flex flex-col">
-      {/* Top Navigation */}
-      <div className="bg-card border-b border-border">
-        <div className="px-6 py-4">
-          <div className="flex items-center justify-between">
-            {/* Logo & Back */}
-            <div className="flex items-center gap-6">
-              <div className="flex items-center gap-3">
-                
-                <span className="font-heading font-bold text-foreground">Viva Mutual</span>
-              </div>
-              <Button variant="ghost" onClick={onBack} size="sm">
-                <ArrowLeft size={16} className="mr-2" />
-                Back to Dashboard
-              </Button>
-            </div>
 
-            {/* User Menu */}
-            <div className="relative">
-              <Button variant="outline" size="sm" onClick={() => setShowUserMenu(!showUserMenu)} className="text-xs">
-                <User size={14} className="mr-1" />
-                Arthur (Admin)
-                <ChevronDown size={14} className="ml-1" />
-              </Button>
-              {showUserMenu && <div className="absolute right-0 top-full mt-1 w-48 bg-card border border-border rounded-lg shadow-lg z-50">
-                  <div className="p-1">
-                    <button className="w-full text-left px-3 py-2 text-sm hover:bg-muted rounded flex items-center gap-2">
-                      <User size={14} />
-                      Profile
-                    </button>
-                    <button className="w-full text-left px-3 py-2 text-sm hover:bg-muted rounded flex items-center gap-2">
-                      <Settings size={14} />
-                      Settings
-                    </button>
-                    <hr className="my-1 border-border" />
-                    <button className="w-full text-left px-3 py-2 text-sm hover:bg-muted rounded flex items-center gap-2 text-destructive">
-                      <LogOut size={14} />
-                      Logout
-                    </button>
-                  </div>
-                </div>}
-            </div>
-          </div>
-        </div>
-      </div>
+  return (
+    <div className="min-h-screen bg-background flex flex-col">
+      {/* Navigation */}
+      <Navigation 
+        showSearch={false}
+        onBack={onBack}
+        backLabel="Back to Dashboard"
+        currentUser={{ name: "Arthur", role: "Admin" }}
+      />
 
       <div className="flex flex-1">
-        {/* Sidebar - Lesson List */}
-        <div className="w-80 bg-card border-r border-border flex flex-col">
-        {/* Header */}
-        <div className="p-6 border-b border-border">
-          
-          <h2 className="text-lg font-heading font-semibold mb-2 text-foreground">
-            {moduleData.title}
-          </h2>
-          
-          <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
-            <div className="flex items-center gap-1">
-              <Clock size={14} />
-              <span>{moduleData.totalDuration}</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <Users size={14} />
-              <span>{moduleData.lessons.length} lessons</span>
-            </div>
-          </div>
-
-          {/* Progress */}
-          <div className="mb-4">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium">Progress</span>
-              <span className="text-sm text-muted-foreground">{progressPercentage}%</span>
-            </div>
-            <Progress value={progressPercentage} className="progress-indicator">
-              <div className="progress-bar" style={{
-                width: `${progressPercentage}%`
-              }} />
-            </Progress>
-          </div>
-        </div>
-
-        {/* Lessons List */}
-        <div className="flex-1 overflow-y-auto p-4">
-          <div className="space-y-2">
-            {moduleData.lessons.map((lesson, index) => <div key={lesson.id} onClick={() => setCurrentLessonId(lesson.id)} className={`sidebar-lesson ${currentLessonId === lesson.id ? 'active' : ''}`}>
-                <div className="flex items-center gap-3 flex-1">
-                  <div className="flex-shrink-0">
-                    {lesson.completed ? <CheckCircle size={20} className="text-green-600" /> : <div className="w-5 h-5 rounded-full border-2 border-muted-foreground/30" />}
-                  </div>
-                  
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="text-xs font-medium">
-                        Lesson {index + 1}
-                      </span>
-                      <Badge className={`text-xs ${getTypeColor(lesson.type)}`}>
-                        {getTypeIcon(lesson.type)}
-                        <span className="ml-1 capitalize">{lesson.type}</span>
-                      </Badge>
-                    </div>
-                    <h4 className="text-sm font-medium truncate">
-                      {lesson.title}
-                    </h4>
-                    <p className="text-xs text-muted-foreground">
-                      {lesson.duration}
-                    </p>
-                  </div>
-                </div>
-                
-                {currentLessonId === lesson.id && <ChevronRight size={16} />}
-              </div>)}
-          </div>
-        </div>
-
-        {/* Quick Access Resources */}
-        
-      </div>
+        {/* Sidebar */}
+        <LessonSidebar
+          moduleTitle={moduleData.title}
+          totalDuration={moduleData.totalDuration}
+          lessons={moduleData.lessons}
+          currentLessonId={currentLessonId}
+          onLessonSelect={setCurrentLessonId}
+          progress={progressPercentage}
+        />
 
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col">
-        {/* Content Header */}
-        <div className="bg-card border-b border-border p-6">
-          <div className="flex items-start justify-between">
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <Badge className={getTypeColor(currentLesson?.type || "reading")}>
-                  {getTypeIcon(currentLesson?.type || "reading")}
-                  <span className="ml-1 capitalize">{currentLesson?.type}</span>
-                </Badge>
-                <Badge variant="outline">
-                  Lesson {currentLesson?.id}
-                </Badge>
-              </div>
-              <h1 className="text-2xl font-heading font-bold text-foreground mb-2">
-                {currentLesson?.title}
-              </h1>
-              <p className="text-muted-foreground">
-                {currentLesson?.content?.description}
-              </p>
-            </div>
-            <div className="text-right">
-              <div className="text-sm text-muted-foreground mb-1">Duration</div>
-              <div className="text-lg font-semibold">{currentLesson?.duration}</div>
-            </div>
-          </div>
-        </div>
+          {/* Content Header */}
+          <PageHeader
+            title={currentLesson?.title || ""}
+            subtitle={`Lesson ${currentLesson?.id} • ${currentLesson?.duration}`}
+            description={currentLesson?.content?.description}
+            badge={{
+              text: currentLesson?.type || "lesson",
+              variant: "outline"
+            }}
+            breadcrumbs={[
+              { label: "Dashboard", onClick: onBack },
+              { label: moduleData.title },
+              { label: `Lesson ${currentLesson?.id}` }
+            ]}
+          />
 
-        {/* Content Body */}
-        <div className="flex-1 p-6">
-          {currentLesson?.type === "video" && <div className="space-y-6">
-              {/* Video Player Placeholder */}
-              <Card className="card-viva h-64 flex items-center justify-center bg-muted">
-                <div className="text-center">
-                  <PlayCircle size={64} className="mx-auto mb-4 text-primary" />
-                  <h3 className="text-lg font-semibold mb-2">Video Content</h3>
-                  <p className="text-muted-foreground">
-                    Interactive video player would be embedded here
+          {/* Content Body */}
+          <div className="flex-1 p-6 overflow-y-auto">
+            {currentLesson?.type === "video" && (
+              <div className="space-y-6">
+                {/* Video Player */}
+                <VideoPlayer
+                  title={currentLesson.title}
+                  duration={currentLesson.duration}
+                  onComplete={handleMarkComplete}
+                />
+
+                {/* Learning Objectives for first lesson */}
+                {currentLesson.id === "1" && (
+                  <Card className="card-viva p-6">
+                    <h3 className="text-lg font-semibold mb-4">Learning Objectives</h3>
+                    <ul className="space-y-3">
+                      {moduleData.objectives.map((objective, index) => (
+                        <li key={index} className="flex items-start gap-3">
+                          <CheckCircle size={16} className="text-green-600 mt-0.5 flex-shrink-0" />
+                          <span className="text-sm leading-relaxed">{objective}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </Card>
+                )}
+              </div>
+            )}
+
+            {currentLesson?.type === "quiz" && currentLesson.content?.quiz && (
+              <Card className="card-viva p-6">
+                <h3 className="text-lg font-semibold mb-6">Knowledge Check</h3>
+                <div className="space-y-6">
+                  <p className="text-foreground font-medium text-lg">
+                    {currentLesson.content.quiz.question}
                   </p>
+                  <div className="space-y-3">
+                    {currentLesson.content.quiz.options.map((option, index) => (
+                      <Button
+                        key={index}
+                        variant="outline"
+                        className="w-full text-left justify-start h-auto p-4 hover:bg-muted/50"
+                      >
+                        <span className="font-semibold mr-3 text-primary">
+                          {String.fromCharCode(65 + index)}.
+                        </span>
+                        <span className="text-sm">{option}</span>
+                      </Button>
+                    ))}
+                  </div>
+                  <Button className="btn-viva">
+                    Submit Answer
+                  </Button>
                 </div>
               </Card>
+            )}
 
-              {/* Learning Objectives */}
-              {currentLesson.id === "1" && <Card className="card-viva p-6">
-                  <h3 className="text-lg font-semibold mb-4">Learning Objectives</h3>
-                  <ul className="space-y-2">
-                    {moduleData.objectives.map((objective, index) => <li key={index} className="flex items-start gap-2">
-                        <CheckCircle size={16} className="text-green-600 mt-0.5 flex-shrink-0" />
-                        <span className="text-sm">{objective}</span>
-                      </li>)}
-                  </ul>
-                </Card>}
-            </div>}
-
-          {currentLesson?.type === "quiz" && currentLesson.content?.quiz && <Card className="card-viva p-6">
-              <h3 className="text-lg font-semibold mb-4">Knowledge Check</h3>
-              <div className="space-y-4">
-                <p className="text-foreground font-medium">
-                  {currentLesson.content.quiz.question}
-                </p>
-                <div className="space-y-2">
-                  {currentLesson.content.quiz.options.map((option, index) => <Button key={index} variant="outline" className="w-full text-left justify-start h-auto p-4">
-                      <span className="font-medium mr-3">{String.fromCharCode(65 + index)}.</span>
-                      {option}
-                    </Button>)}
+            {(currentLesson?.type === "reading" || currentLesson?.type === "activity") && (
+              <Card className="card-viva p-6">
+                <h3 className="text-lg font-semibold mb-4">
+                  {currentLesson.type === "activity" ? "Interactive Activity" : "Reading Material"}
+                </h3>
+                <div className="prose max-w-none">
+                  <p className="text-muted-foreground mb-6 text-base leading-relaxed">
+                    {currentLesson.content?.description}
+                  </p>
+                  <div className="space-y-4 text-sm leading-relaxed">
+                    <p>
+                      This lesson provides comprehensive coverage of the topic through 
+                      {currentLesson.type === "activity" 
+                        ? " interactive exercises and practical applications" 
+                        : " detailed reading materials and evidence-based information"}.
+                    </p>
+                    <p>
+                      The content is designed to be accessible and immediately applicable in your care practice,
+                      ensuring you can implement these strategies effectively with your clients.
+                    </p>
+                    <p>
+                      Take your time to review all materials and don't hesitate to revisit sections as needed.
+                      Your understanding of these concepts is crucial for providing quality care.
+                    </p>
+                  </div>
                 </div>
-              </div>
-            </Card>}
+              </Card>
+            )}
 
-          {(currentLesson?.type === "reading" || currentLesson?.type === "activity") && <Card className="card-viva p-6">
-              <h3 className="text-lg font-semibold mb-4">
-                {currentLesson.type === "activity" ? "Interactive Activity" : "Reading Material"}
-              </h3>
-              <div className="prose max-w-none">
-                <p className="text-muted-foreground mb-4">
-                  {currentLesson.content?.description}
-                </p>
-                <p>
-                  This lesson provides comprehensive coverage of the topic through 
-                  {currentLesson.type === "activity" ? " interactive exercises and practical applications" : " detailed reading materials and evidence-based information"}.
-                  The content is designed to be accessible and immediately applicable in your care practice.
-                </p>
-              </div>
-            </Card>}
-
-          {/* Resources */}
-          {currentLesson?.content?.resources && currentLesson.content.resources.length > 0 && <Card className="card-viva p-6 mt-6">
-              <h3 className="text-lg font-semibold mb-4">Downloadable Resources</h3>
-              <div className="grid gap-3">
-                {currentLesson.content.resources.map((resource, index) => <div key={index} className="flex items-center justify-between p-3 border border-border rounded-lg">
-                    <div className="flex items-center gap-3">
-                      <Download size={20} className="text-primary" />
-                      <div>
-                        <h4 className="font-medium text-sm">{resource.title}</h4>
-                        <p className="text-xs text-muted-foreground">{resource.type}</p>
+            {/* Resources */}
+            {currentLesson?.content?.resources && currentLesson.content.resources.length > 0 && (
+              <Card className="card-viva p-6 mt-6">
+                <h3 className="text-lg font-semibold mb-4">Downloadable Resources</h3>
+                <div className="grid gap-3">
+                  {currentLesson.content.resources.map((resource, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between p-4 border border-border rounded-lg hover:bg-muted/30 transition-colors"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 bg-primary/10 rounded-lg">
+                          <Download size={20} className="text-primary" />
+                        </div>
+                        <div>
+                          <h4 className="font-medium text-sm">{resource.title}</h4>
+                          <p className="text-xs text-muted-foreground">{resource.type} Document</p>
+                        </div>
                       </div>
+                      <Button size="sm" variant="outline" className="hover:bg-primary hover:text-primary-foreground">
+                        <Download size={14} className="mr-1" />
+                        Download
+                      </Button>
                     </div>
-                    <Button size="sm" variant="outline">
-                      Download
-                    </Button>
-                  </div>)}
-              </div>
-            </Card>}
-        </div>
+                  ))}
+                </div>
+              </Card>
+            )}
+          </div>
 
-        {/* Action Bar */}
-        <div className="bg-card border-t border-border p-6">
-          <div className="flex items-center justify-between">
-            <Button variant="outline" disabled={currentLesson?.id === "1"}>
-              Previous Lesson
-            </Button>
-            
-            <div className="flex items-center gap-3">
-              {!currentLesson?.completed && <Button className="btn-viva">
-                  <CheckCircle size={16} className="mr-2" />
-                  Mark Complete
-                </Button>}
-              
-              <Button className="btn-viva" disabled={currentLesson?.id === moduleData.lessons.length.toString()}>
-                Next Lesson
-                <ChevronRight size={16} className="ml-2" />
+          {/* Action Bar */}
+          <div className="bg-card border-t border-border p-6">
+            <div className="flex items-center justify-between">
+              <Button 
+                variant="outline" 
+                onClick={handlePreviousLesson}
+                disabled={isFirstLesson}
+                className="hover:bg-muted"
+              >
+                ← Previous Lesson
               </Button>
+              
+              <div className="flex items-center gap-3">
+                {!currentLesson?.completed && (
+                  <Button 
+                    onClick={handleMarkComplete}
+                    className="btn-viva"
+                  >
+                    <CheckCircle size={16} className="mr-2" />
+                    Mark Complete
+                  </Button>
+                )}
+                
+                <Button 
+                  onClick={handleNextLesson}
+                  disabled={isLastLesson}
+                  className="btn-viva"
+                >
+                  Next Lesson
+                  <ChevronRight size={16} className="ml-2" />
+                </Button>
+              </div>
             </div>
           </div>
         </div>
-        </div>
       </div>
-    </div>;
+    </div>
+  );
 }
